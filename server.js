@@ -35,7 +35,45 @@ userRouter
 
 authRouter
 .route("/signup")
-.post(signupUser)
+.post(setCreatedAt,signupUser);
+
+function setCreatedAt (req,res,next){
+    let obj=req.body;
+    let length=Object.keys(obj).length;
+    if(length==0){
+        return res.status(400).json({
+            message:"cannot created user if  req.body is empty"
+        })
+    }
+    req.body.createdAt=new Date().toISOString();
+    next();
+}
+const userModel=require("./models/userModel")
+
+async function signupUser (req,res){
+    try{
+       
+        // let {email,name,password}=req.body
+        // let name=userDetails.name;
+        // let email=userDetails.email
+        // let password=userDetails.password
+        let userObj=req.body;
+        let user= await userModel.create(userObj);
+         console.log("user",user);
+      
+        res.json({
+            message:"user signed up",
+            user:userObj
+        })
+    }
+    catch(err){
+        console.log(err);
+        res.json({
+            message:err.message
+        })
+    }
+   
+}
 
 authRouter
 .route("/forgetPassword")
@@ -69,19 +107,7 @@ app.use((req,res)=>{
 
 
 
-function signupUser (req,res){
-    let userDetails=req.body
-    // let {email,name,password}=req.body
-    let name=userDetails.name;
-    let email=userDetails.email
-    let password=userDetails.password
-    user.push({email,name,password});
-    console.log(req.body)
-    res.json({
-        message:"user signed up",
-        user:req.body
-    })
-}
+
 // for param route
 
 // userRouter
