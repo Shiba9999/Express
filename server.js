@@ -1,5 +1,6 @@
 let express=require("express");
 let app=express();
+let cors=require("cors");
 let PORT="5000"
 app.listen(PORT,function(){
     console.log(`app is running at port ${PORT}`);
@@ -8,8 +9,17 @@ app.get("/",(req,res)=>{
     console.log(req.path);
     res.send("hello from backend");
 })
+app.use(cors());
  app.use(express.json())//just add this line before get or post req IMP
  let user=[]
+
+ //middleware function
+ app.use((req,res,next)=>{
+     console.log("i am a middleware");
+     next();
+ })
+
+
  app.use(express.static("public"))
 const userRouter=express.Router();
 const authRouter=express.Router();
@@ -27,14 +37,45 @@ authRouter
 .route("/signup")
 .post(signupUser)
 
+authRouter
+.route("/forgetPassword")
+.get(getForgetPassword)
+.post(postForgetpassword)
+
+function getForgetPassword(req,res){
+res.sendFile("public/forgetPassword.html",{root:__dirname})
+
+}
+function postForgetpassword (req,res){
+    let data=req.body
+    console.log(data)
+    res.json({
+        msg:"data received",
+        data:data.email
+    })
+
+}
+//redirect
+app.get("/user-all",(req,res)=>{
+    res.redirect("/user");
+})
+
+//send 404 file
+app.use((req,res)=>{
+    res.sendFile("public/404.html",{root:__dirname})
+})
+
+
+
+
 
 function signupUser (req,res){
     let userDetails=req.body
     // let {email,name,password}=req.body
-    user.push({email,name,password});
     let name=userDetails.name;
     let email=userDetails.email
     let password=userDetails.password
+    user.push({email,name,password});
     console.log(req.body)
     res.json({
         message:"user signed up",
@@ -75,7 +116,8 @@ app.delete("/user",(req,res)=>{
 })
 
 //parameter route
-app.get("/user/:id",(req,res)=>{
-    console.log(req.params);
-    res.send(req.params);
-})
+// app.get("/user/:id",(req,res)=>{
+//     console.log(req.params);
+//     res.send(req.params);
+// })
+
