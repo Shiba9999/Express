@@ -1,10 +1,12 @@
 let express=require("express");
 let app=express();
 let cors=require("cors");
-let PORT="5000"
+let PORT="8000"
 app.listen(PORT,function(){
     console.log(`app is running at port ${PORT}`);
 })
+const cookieParser = require('cookie-parser')
+app.use(cookieParser())
 app.get("/",(req,res)=>{
     console.log(req.path);
     res.send("hello from backend");

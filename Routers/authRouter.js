@@ -87,6 +87,10 @@ async function loginUser(req, res) {
       let user = await userModel.findOne({ email: req.body.email });
       if (user) {
         if (req.body.password == user.password) {
+          //first cookie name and token no  and httponly for browser does't edit your cookie
+         // What does HttpOnly true do?
+         //It provides a gate that prevents the specialized cookie from being accessed by anything other than the server
+          res.cookie("login","1234",{httpOnly:true})
         
           return res.json({
             message: "user loged in",
