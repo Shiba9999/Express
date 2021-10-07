@@ -1,6 +1,7 @@
 const express=require('express');
 const userRouter=express.Router();
 const userModel=require('../models/userModel');
+const protectRoute=require("../Routers/authHelper")
 
 //routes
 
@@ -71,31 +72,6 @@ function getUserById(req,res){
     res.json(req.params.id);
 }
 let flag=true //user logged in
-function protectRoute(req,res,next){
-   try{
-       //if user logged in
-    if(req.cookies){
-        if(req.cookies.login=="1234"){
-            next();
-        }else{
-            res.json({
-                message:"operation not allowed"
-            })
-        }
-    
-    }
-    else{
-        res.json({
-            message:"operation not allowed"
-        })
-    }
-   }
-   catch(err){
-      return res.status(500).json({
-         message:err.message
-      }) 
-   }
 
-}
 
 module.exports=userRouter;

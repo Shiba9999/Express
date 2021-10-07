@@ -2,7 +2,8 @@ const express = require("express");
 const userRouter = express.Router();
 const userModel = require("../models/userModel");
 const authRouter = express.Router();
-
+const jwt=require("jsonwebtoken");
+const {JWT_KEY}=require("../secrets")
 //----------routes-----------
 authRouter.route("/signup").post(setCreatedAt, signupUser);
 
@@ -88,10 +89,13 @@ async function loginUser(req, res) {
       let user = await userModel.findOne({ email: req.body.email });
       if (user) {
         if (req.body.password == user.password) {
+          let payload=user["_id"]
+          let token=jwt.sign({id:payload},JWT_KEY)
+          console.log(token);
           //first cookie name and token no  and httponly for browser does't edit your cookie
          // What does HttpOnly true do?
          //It provides a gate that prevents the specialized cookie from being accessed by anything other than the server
-          res.cookie("login","1234",{httpOnly:true})
+          res.cookie("login",token,{httpOnly:true})
         
           return res.json({
             message: "user loged in",
