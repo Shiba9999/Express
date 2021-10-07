@@ -33,6 +33,7 @@ async function signupUser(req, res) {
   // let name=userDetails.name;
   // let email=userDetails.email;
   // let password=userDetails.password;
+  
   try {
     let userObj = req.body;
     // user.push({email,name,password});
